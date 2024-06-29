@@ -31,3 +31,30 @@ body {
     text-wrap: balance;
   }
 }
+
+
+.collapsiblePanel {
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.header {
+  background-color: #f0f0f0;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content {
+  padding: 10px;
+}
+
+.arrowRight::after {
+  content: '▶';
+}
+
+.arrowDown::after {
+  content: '▼';
+}
