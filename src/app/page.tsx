@@ -1,9 +1,11 @@
-"use client";
+'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import HistoryComponent from "@/app/component/HistoryComponent";
-import JSONEditorComponent from "@/app/component/JSONEditorComponent";
-import AdModal from "@/app/component/AdModal";
+import HistoryComponent from '@/app/component/HistoryComponent';
+import JSONEditorComponent from '@/app/component/JSONEditorComponent';
+import AdModal from '@/app/component/AdModal';
+import {GoogleLogin} from "@react-oauth/google";
+import Login from "@/app/component/Login";
 
 const Page: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
@@ -17,6 +19,10 @@ const Page: React.FC = () => {
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleTransform = () => {
+        // Your transform logic here
     };
 
     return (
@@ -35,6 +41,9 @@ const Page: React.FC = () => {
                             </Link>
                             <Link href="/architectexample" className="hover:underline">
                                 Architecture Example
+                            </Link>
+                            <Link href="/login" className="hover:underline">
+                                <Login/>
                             </Link>
                         </div>
                     </div>
@@ -76,6 +85,7 @@ const Page: React.FC = () => {
                             <div className="w-1/3 bg-white p-4 overflow-y-auto flex flex-col">
                                 <div className="bg-gray-100 p-2 rounded-t border-b border-gray-300">
                                     <h2 className="text-base font-semibold text-gray-700 flex-grow">Jolt Transformed Output</h2>
+                                    <button onClick={handleTransform}>Transform Data</button>
                                 </div>
                                 <div className="flex-grow flex flex-col">
                                     <JSONEditorComponent
