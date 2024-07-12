@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation';
 import HistoryComponent from '@/app/components/HistoryComponent';
 import AdModal from '@/app/components/AdModal';
 import dynamic from 'next/dynamic';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import axiosInstance from "@/app/service/ApiInterceptor";
 import ApiService from "@/app/service/ApiService";
 
 const JSONEditorComponent = dynamic(() => import('@/app/component/JSONEditorComponent'), { ssr: false });
+
 const Page: React.FC = () => {
     const router = useRouter();
     const [user, setUser] = useState<any>(null); // State to hold user information
@@ -80,6 +81,11 @@ const Page: React.FC = () => {
                 setOutputError('Failed to transform data: '+error );
             }
         }
+    };
+
+    const handleSpecAction = () => {
+        // Define the action for the new button here
+        console.log('Spec Action button clicked');
     };
 
     const toggleSidebar = () => {
@@ -155,10 +161,16 @@ const Page: React.FC = () => {
                                 </div>
                             </div>
                             <div className="w-1/3 bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col">
-                                <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300">
+                                <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300 flex items-center">
                                     <h2 className="text-base font-semibold text-gray-700 flex-grow">
                                         JSON Jolt Spec
                                     </h2>
+                                    <button
+                                        className="ml-2 bg-green-500 text-white font-bold py-1 px-3 rounded hover:bg-green-600"
+                                        onClick={handleSpecAction}
+                                    >
+                                        AI Spec
+                                    </button>
                                 </div>
                                 <div className="flex-grow flex flex-col">
                                     <JSONEditorComponent
