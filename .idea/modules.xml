@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/powerjolt.iml" filepath="$USER_HOME$/powerjolt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/powerjolt_frontend.iml" filepath="$PROJECT_DIR$/powerjolt_frontend.iml" />
     </modules>
   </component>
 </project>

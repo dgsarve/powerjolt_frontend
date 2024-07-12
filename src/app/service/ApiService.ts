@@ -8,7 +8,7 @@ import axiosInstance from "@/app/service/ApiInterceptor";
 }
 
 const transform = (request: TransformRequest): Promise<string> => {
-    return axiosInstance.post<string>('/transform', request)
+    return axiosInstance.post<string>('/api/transform', request)
         .then(response => {
             return response.data;
         });
