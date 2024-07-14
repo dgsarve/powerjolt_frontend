@@ -1,15 +1,15 @@
 'use client'
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import HistoryComponent from '@/app/components/HistoryComponent';
 import AdModal from '@/app/components/AdModal';
 import ApiService from '@/app/service/ApiService';
+import LoginDialog from "@/app/components/LoginDialog";
 
-
-const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), {ssr: false});
+const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), { ssr: false });
 
 const Page: React.FC = () => {
     const router = useRouter();
@@ -24,6 +24,7 @@ const Page: React.FC = () => {
     const [joltSpecJSON, setJoltSpecJSON] = useState<string>('');
     const [outputJSON, setOutputJSON] = useState<string>('');
     const [history, setHistory] = useState<any[]>([]); // State to hold transformation history
+    const [showLoginDialog, setShowLoginDialog] = useState<boolean>(false); // State to control login dialog visibility
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -105,10 +106,30 @@ const Page: React.FC = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
+    const openLoginDialog = () => {
+        setShowLoginDialog(true);
+    };
+
+    const closeLoginDialog = () => {
+        setShowLoginDialog(false);
+    };
+
+    const handleLoginSuccess = () => {
+        // Handle successful login, e.g., fetch user info
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken: any = jwtDecode(token);
+            setUser(decodedToken);
+            if (decodedToken.picture) {
+                setProfilePictureUrl(decodedToken.picture);
+            }
+        }
+    };
+
     return (
         <div className="h-screen flex flex-col text-[6px] font-sans"
-             style={{fontFamily: 'Open Sans, Roboto, sans-serif'}}>
-            {!isAdComplete && <AdModal onAdComplete={() => setIsAdComplete(true)}/>}
+             style={{ fontFamily: 'Open Sans, Roboto, sans-serif' }}>
+            {!isAdComplete && <AdModal onAdComplete={() => setIsAdComplete(true)} />}
 
             {isAdComplete && (
                 <>
@@ -119,11 +140,12 @@ const Page: React.FC = () => {
                             </Link>
                         </div>
                         <div className="flex space-x-4 text-sm ml-auto items-center">
-                            <Link href="/springboot">
-    <span className="hover:underline">
-        Spring Boot Example
-    </span>
-                            </Link>
+                            <a href="https://medium.com/@dgsarve/integrating-jolt-with-spring-boot-for-json-transformation-433d7eb1d618"
+                               target="_blank" rel="noopener noreferrer">
+                                  <span className="hover:underline">
+                                    Spring Boot Example
+                                  </span>
+                            </a>
                             <Link href="/architectexample" className="hover:underline">
                                 Architecture Example
                             </Link>
@@ -145,9 +167,9 @@ const Page: React.FC = () => {
                                     </button>
                                 </>
                             ) : (
-                                <Link href="/login" className="hover:underline">
+                                <button onClick={openLoginDialog} className="hover:underline focus:outline-none">
                                     Login
-                                </Link>
+                                </button>
                             )}
                         </div>
                     </div>
@@ -158,7 +180,7 @@ const Page: React.FC = () => {
                                 isSidebarOpen ? 'w-[10%]' : 'w-0'
                             } bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col`}
                         >
-                            {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory}/>}
+                            {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory} />}
                         </div>
 
                         <div className="flex-grow flex">
@@ -222,6 +244,11 @@ const Page: React.FC = () => {
                     <footer className="bg-blue-600 text-white p-2 text-center text-[10px]">
                         © {new Date().getFullYear()} Magnasha. All rights reserved.
                     </footer>
+
+                    {/* Login Dialog */}
+                    {showLoginDialog && (
+                        <LoginDialog onSuccessLogin={handleLoginSuccess} onClose={closeLoginDialog} />
+                    )}
                 </>
             )}
         </div>
