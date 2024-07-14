@@ -2,19 +2,18 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import HistoryComponent from '@/app/components/HistoryComponent';
-import AdModal from '@/app/components/AdModal';
 import dynamic from 'next/dynamic';
 import { jwtDecode } from 'jwt-decode';
-import axiosInstance from "@/app/service/ApiInterceptor";
-import ApiService from "@/app/service/ApiService";
+import HistoryComponent from '@/app/components/HistoryComponent';
+import AdModal from '@/app/components/AdModal';
+import ApiService from '@/app/service/ApiService';
 
-const JSONEditorComponent = dynamic(() => import('@/app/component/JSONEditorComponent'), { ssr: false });
+const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), { ssr: false });
 
 const Page: React.FC = () => {
     const router = useRouter();
-    const [user, setUser] = useState<any>(null); // State to hold user information
-    const [profilePictureUrl, setProfilePictureUrl] = useState<string>(''); // State to hold profile picture URL
+    const [user, setUser] = useState<any>(null);
+    const [profilePictureUrl, setProfilePictureUrl] = useState<string>('');
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
     const [jsonError, setJsonError] = useState<string>('');
     const [joltSpecError, setJoltSpecError] = useState<string>('');
@@ -23,68 +22,81 @@ const Page: React.FC = () => {
     const [inputJSON, setInputJSON] = useState<string>('');
     const [joltSpecJSON, setJoltSpecJSON] = useState<string>('');
     const [outputJSON, setOutputJSON] = useState<string>('');
+    const [history, setHistory] = useState<any[]>([]); // State to hold transformation history
 
     useEffect(() => {
-        // Check if user is logged in (using stored JWT token)
         const token = localStorage.getItem('token');
         if (token) {
             const decodedToken: any = jwtDecode(token);
-            console.log(decodedToken)
-            setUser(decodedToken); // Set user details from decoded token
-            // Example: Set profile picture if available in token
+            setUser(decodedToken);
             if (decodedToken.picture) {
                 setProfilePictureUrl(decodedToken.picture);
             }
         }
     }, []);
 
+    useEffect(() => {
+        if (isSidebarOpen) {
+            fetchHistory();
+        }
+    }, [isSidebarOpen]);
+
     const handleLogout = () => {
-        // Clear user data and JWT token from local storage
         localStorage.removeItem('token');
         setUser(null);
         setProfilePictureUrl('');
-        // Redirect to login page after logout
         router.push('/');
     };
 
     const handleTransform = async () => {
-        console.log('--------------');
         try {
-            console.log('--------aaaa------');
-            console.log(inputJSON);
-            console.log(joltSpecJSON);
-
             const inputJsonParsed = JSON.parse(inputJSON);
             const joltSpecJsonParsed = JSON.parse(joltSpecJSON);
 
-            // Prepare the request object
             const request = {
                 inputJson: inputJSON,
                 specJson: joltSpecJSON
             };
 
-            // Call the backend using the ApiService
             const result = await ApiService.transform(request);
 
             setOutputJSON(JSON.stringify(result, null, 2));
             setJsonError('');
             setJoltSpecError('');
             setOutputError('');
+
+            // Fetch updated history if History component is shown
+            if (isSidebarOpen) {
+                fetchHistory();
+            }
         } catch (error) {
             if (error) {
-                // Handle unauthorized error
                 console.log('User is not authenticated. Redirecting to login page...');
             } else if (error instanceof SyntaxError) {
                 setJsonError('Invalid JSON in input or spec');
                 setJoltSpecError('Invalid JSON in input or spec');
             } else {
-                setOutputError('Failed to transform data: '+error );
+                setOutputError('Failed to transform data: ' + error);
             }
         }
     };
 
+    const fetchHistory = async () => {
+        try {
+            const history = await ApiService.fetchHistory();
+            setHistory(history);
+        } catch (error) {
+            console.error('Error fetching history:', error);
+        }
+    };
+
+    const handleSelectHistory = (record: any) => {
+        setInputJSON(record.inputJson);
+        setJoltSpecJSON(record.specJson);
+        setOutputJSON(record.outputJson);
+    };
+
     const handleSpecAction = () => {
-        // Define the action for the new button here
         console.log('Spec Action button clicked');
     };
 
@@ -139,10 +151,10 @@ const Page: React.FC = () => {
                     <div className="flex flex-grow overflow-hidden text-sm bg-gray-50">
                         <div
                             className={`transition-all duration-300 ${
-                                isSidebarOpen ? 'w-1/4' : 'w-0'
+                                isSidebarOpen ? 'w-1/12' : 'w-0'
                             } bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col`}
                         >
-                            {isSidebarOpen && <HistoryComponent />}
+                            {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory} />}
                         </div>
 
                         <div className="w-full flex">
