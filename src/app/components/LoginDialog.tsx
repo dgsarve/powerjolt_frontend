@@ -18,6 +18,8 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ onSuccessLogin, onClose }) =>
             .then(response => {
                 const { data } = response;
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('name', data.username);
+                localStorage.setItem('picture', data.profilepic);
                 onSuccessLogin(data.token); // Notify parent component of successful login
                 onClose(); // Close the dialog
             })

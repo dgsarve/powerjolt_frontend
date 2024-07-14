@@ -1,21 +1,23 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import HistoryComponent from '@/app/components/HistoryComponent';
 import AdModal from '@/app/components/AdModal';
 import ApiService from '@/app/service/ApiService';
 import LoginDialog from "@/app/components/LoginDialog";
+import JoltTemplateComponent from "@/app/components/JoltTemplates";
 
-const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), { ssr: false });
+const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), {ssr: false});
 
 const Page: React.FC = () => {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [profilePictureUrl, setProfilePictureUrl] = useState<string>('');
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+    const [isTemplateSidebarOpen, setIsTemplateSidebarOpen] = useState<boolean>(true);
     const [jsonError, setJsonError] = useState<string>('');
     const [joltSpecError, setJoltSpecError] = useState<string>('');
     const [outputError, setOutputError] = useState<string>('');
@@ -28,12 +30,11 @@ const Page: React.FC = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        const username = localStorage.getItem('name');
+        const picture: any = localStorage.getItem('picture');
         if (token) {
-            const decodedToken: any = jwtDecode(token);
-            setUser(decodedToken);
-            if (decodedToken.picture) {
-                setProfilePictureUrl(decodedToken.picture);
-            }
+            setUser(username);
+            setProfilePictureUrl(picture);
         }
     }, []);
 
@@ -45,6 +46,8 @@ const Page: React.FC = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('name');
+        localStorage.removeItem('picture');
         setUser(null);
         setProfilePictureUrl('');
         router.push('/');
@@ -98,12 +101,22 @@ const Page: React.FC = () => {
         setOutputJSON(record.outputJson);
     };
 
+    const handleSelectTemplate = (record: any) => {
+        setInputJSON(record.inputJson);
+        setJoltSpecJSON(record.specJson);
+        setOutputJSON(record.outputJson);
+    };
+
     const handleSpecAction = () => {
         console.log('Spec Action button clicked');
     };
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    const toggleTemplateSidebar = () => {
+        setIsTemplateSidebarOpen(!isTemplateSidebarOpen);
     };
 
     const openLoginDialog = () => {
@@ -115,32 +128,40 @@ const Page: React.FC = () => {
     };
 
     const handleLoginSuccess = () => {
-        // Handle successful login, e.g., fetch user info
         const token = localStorage.getItem('token');
+        const username = localStorage.getItem('name');
+        const picture: any = localStorage.getItem('picture');
         if (token) {
-            const decodedToken: any = jwtDecode(token);
-            setUser(decodedToken);
-            if (decodedToken.picture) {
-                setProfilePictureUrl(decodedToken.picture);
-            }
+            setUser(username);
+            setProfilePictureUrl(picture);
         }
     };
 
     return (
         <div className="h-screen flex flex-col text-[6px] font-sans"
-             style={{ fontFamily: 'Open Sans, Roboto, sans-serif' }}>
-            {!isAdComplete && <AdModal onAdComplete={() => setIsAdComplete(true)} />}
+             style={{fontFamily: 'Open Sans, Roboto, sans-serif'}}>
+            {!isAdComplete && <AdModal onAdComplete={() => setIsAdComplete(true)}/>}
 
             {isAdComplete && (
                 <>
                     <div className="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
-                        <div className="flex space-x-4 text-sm">
-                            <Link href="#" onClick={toggleSidebar} className="text-gray-200 hover:underline">
-                                {isSidebarOpen ? 'Hide History' : 'Show History'}
-                            </Link>
+                        <div className="flex space-x-8 text-sm">
+                            <div>
+                                <Link href="#" onClick={toggleSidebar} className="text-gray-200 hover:underline">
+                                    {isSidebarOpen ? 'Hide History' : 'Show History'}
+                                </Link>
+                            </div>
+                            <div>
+                                <Link href="#" onClick={toggleTemplateSidebar}
+                                      className="text-gray-200 hover:underline">
+                                    {isTemplateSidebarOpen ? 'Hide Template' : 'Show Template'}
+                                </Link>
+                            </div>
                         </div>
+
+
                         <div className="flex space-x-4 text-sm ml-auto items-center">
-                            <a href="https://medium.com/@dgsarve/integrating-jolt-with-spring-boot-for-json-transformation-433d7eb1d618"
+                            <a href="https://medium.com/@thinkcloudmasters/integrating-jolt-with-spring-boot-for-json-transformation-bd414a1080d1"
                                target="_blank" rel="noopener noreferrer">
                                   <span className="hover:underline">
                                     Spring Boot Example
@@ -151,11 +172,11 @@ const Page: React.FC = () => {
                             </Link>
                             {user ? (
                                 <>
-                                    <span className="text-gray-200 mr-2">Welcome, {user.name}</span>
+                                    <span className="text-gray-200 mr-2">Welcome, {user}</span>
                                     {profilePictureUrl && (
                                         <img
                                             src={profilePictureUrl}
-                                            alt="Profile"
+                                            alt=""
                                             className="w-6 h-6 rounded-full"
                                         />
                                     )}
@@ -175,12 +196,15 @@ const Page: React.FC = () => {
                     </div>
 
                     <div className="flex flex-grow overflow-hidden text-sm bg-gray-50">
+
                         <div
-                            className={`transition-all duration-300 ${
-                                isSidebarOpen ? 'w-[10%]' : 'w-0'
-                            } bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col`}
-                        >
-                            {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory} />}
+                            className={`transition-all duration-300 ${isSidebarOpen ? 'w-[10%]' : 'w-0'} bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col`}>
+                            {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory}/>}
+                        </div>
+
+                        <div
+                            className={`transition-all duration-300 ${isTemplateSidebarOpen ? 'w-[10%]' : 'w-0'} bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col`}>
+                            {isTemplateSidebarOpen && <JoltTemplateComponent onSelect={handleSelectTemplate}/>}
                         </div>
 
                         <div className="flex-grow flex">
@@ -204,11 +228,13 @@ const Page: React.FC = () => {
                                         JSON Jolt Spec
                                     </h2>
                                     <button
-                                        className="ml-2 bg-green-500 text-white font-bold py-1 px-3 rounded hover:bg-green-600"
-                                        onClick={handleSpecAction}
+                                        className="ml-2 bg-green-500 text-white font-bold py-1 px-3 rounded hover:bg-green-600 relative"
+                                        disabled={true}
+                                        style={{position: 'relative'}}
                                     >
-                                        AI Spec
+                                        AI Spec (Next release)
                                     </button>
+
                                 </div>
                                 <div className="flex-grow flex flex-col">
                                     <JSONEditorComponent
@@ -247,7 +273,7 @@ const Page: React.FC = () => {
 
                     {/* Login Dialog */}
                     {showLoginDialog && (
-                        <LoginDialog onSuccessLogin={handleLoginSuccess} onClose={closeLoginDialog} />
+                        <LoginDialog onSuccessLogin={handleLoginSuccess} onClose={closeLoginDialog}/>
                     )}
                 </>
             )}

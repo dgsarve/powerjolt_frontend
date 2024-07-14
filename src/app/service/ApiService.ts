@@ -20,6 +20,23 @@ export interface TransformationHistoryResponse {
     records: TransformationHistory[];
 }
 
+interface JoltTemplate {
+    id: number;
+    category: string;
+    name: string;
+    description: string;
+    inputJson: string;
+    specJson: string;
+    outputJson: string;
+    tags: string;
+    timestamp: string;
+}
+
+
+export interface JoltTemplateResponse {
+    category: string;
+    joltTemplates: JoltTemplate[];
+}
 
 const transform = (request: TransformRequest): Promise<string> => {
     return axiosInstance.post<string>('/api/transform', request)
@@ -36,10 +53,18 @@ const fetchHistory = (): Promise<TransformationHistoryResponse[]> => {
         });
 };
 
+const fetchJoltTemplates = (): Promise<JoltTemplateResponse[]> => {
+    return axiosInstance.get<JoltTemplateResponse[]>('/api/templates')
+        .then(response => {
+            return response.data;
+        });
+};
+
 
 const ApiService = {
     transform,
-    fetchHistory
+    fetchHistory,
+    fetchJoltTemplates
 };
 
 export default ApiService;
