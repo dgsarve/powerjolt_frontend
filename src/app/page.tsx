@@ -1,14 +1,14 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import HistoryComponent from '@/app/components/HistoryComponent';
 import AdModal from '@/app/components/AdModal';
 import ApiService from '@/app/service/ApiService';
 
-const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), { ssr: false });
+const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), {ssr: false});
 
 const Page: React.FC = () => {
     const router = useRouter();
@@ -42,6 +42,8 @@ const Page: React.FC = () => {
     }, [isSidebarOpen]);
 
     const handleLogout = () => {
+
+
         localStorage.removeItem('token');
         setUser(null);
         setProfilePictureUrl('');
@@ -105,8 +107,9 @@ const Page: React.FC = () => {
     };
 
     return (
-        <div className="h-screen flex flex-col text-[6px] font-sans" style={{ fontFamily: 'Open Sans, Roboto, sans-serif' }}>
-            {!isAdComplete && <AdModal onAdComplete={() => setIsAdComplete(true)} />}
+        <div className="h-screen flex flex-col text-[6px] font-sans"
+             style={{fontFamily: 'Open Sans, Roboto, sans-serif'}}>
+            {!isAdComplete && <AdModal onAdComplete={() => setIsAdComplete(true)}/>}
 
             {isAdComplete && (
                 <>
@@ -117,8 +120,10 @@ const Page: React.FC = () => {
                             </Link>
                         </div>
                         <div className="flex space-x-4 text-sm ml-auto items-center">
-                            <Link href="/springboot" className="hover:underline">
-                                Spring Boot Example
+                            <Link href="/springboot">
+    <span className="hover:underline">
+        Spring Boot Example
+    </span>
                             </Link>
                             <Link href="/architectexample" className="hover:underline">
                                 Architecture Example
@@ -154,7 +159,7 @@ const Page: React.FC = () => {
                                 isSidebarOpen ? 'w-1/12' : 'w-0'
                             } bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col`}
                         >
-                            {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory} />}
+                            {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory}/>}
                         </div>
 
                         <div className="w-full flex">
