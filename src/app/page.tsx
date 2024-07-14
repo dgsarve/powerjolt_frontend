@@ -8,6 +8,7 @@ import HistoryComponent from '@/app/components/HistoryComponent';
 import AdModal from '@/app/components/AdModal';
 import ApiService from '@/app/service/ApiService';
 
+
 const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), {ssr: false});
 
 const Page: React.FC = () => {
@@ -42,8 +43,6 @@ const Page: React.FC = () => {
     }, [isSidebarOpen]);
 
     const handleLogout = () => {
-
-
         localStorage.removeItem('token');
         setUser(null);
         setProfilePictureUrl('');
@@ -156,13 +155,13 @@ const Page: React.FC = () => {
                     <div className="flex flex-grow overflow-hidden text-sm bg-gray-50">
                         <div
                             className={`transition-all duration-300 ${
-                                isSidebarOpen ? 'w-1/12' : 'w-0'
+                                isSidebarOpen ? 'w-[10%]' : 'w-0'
                             } bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col`}
                         >
                             {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory}/>}
                         </div>
 
-                        <div className="w-full flex">
+                        <div className="flex-grow flex">
                             <div className="w-1/3 bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col">
                                 <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300">
                                     <h2 className="text-base font-semibold text-gray-700 flex-grow">
