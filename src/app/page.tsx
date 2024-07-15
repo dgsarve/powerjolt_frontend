@@ -167,9 +167,9 @@ const Page: React.FC = () => {
                                     Spring Boot Example
                                   </span>
                             </a>
-                            <Link href="/architectexample" className="hover:underline">
-                                Architecture Example
-                            </Link>
+                            {/*<Link href="/architectexample" className="hover:underline">*/}
+                            {/*    Architecture Example*/}
+                            {/*</Link>*/}
                             {user ? (
                                 <>
                                     <span className="text-gray-200 mr-2">Welcome, {user}</span>
@@ -225,7 +225,7 @@ const Page: React.FC = () => {
                             <div className="w-1/3 bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col">
                                 <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300 flex items-center">
                                     <h2 className="text-base font-semibold text-gray-700 flex-grow">
-                                        JSON Jolt Spec
+                                        Jolt Spec
                                     </h2>
                                     <button
                                         className="ml-2 bg-green-500 text-white font-bold py-1 px-3 rounded hover:bg-green-600 relative"
@@ -247,7 +247,7 @@ const Page: React.FC = () => {
                             <div className="w-1/3 bg-white p-2 overflow-y-auto flex flex-col">
                                 <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300 flex items-center">
                                     <h2 className="text-base font-semibold text-gray-700 flex-grow">
-                                        Jolt Transformed Output
+                                        Transformed Output
                                     </h2>
                                     <button
                                         className="ml-2 bg-blue-500 text-white font-bold py-1 px-3 rounded hover:bg-blue-600"

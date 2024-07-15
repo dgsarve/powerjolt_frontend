@@ -14,19 +14,33 @@ const JoltTemplateComponent: React.FC<JoltTemplateComponentProps> = ({ onSelect 
     const [joltemplates, setTemplates] = useState<JoltTemplateResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<any>(null);
-    const [collapsed, setCollapsed] = useState<CollapsedState>({}); // Explicit type for collapsed state
+    const [collapsed, setCollapsed] = useState<CollapsedState>({});
 
     useEffect(() => {
-        ApiService.fetchJoltTemplates()
-            .then((data) => {
-                setTemplates(data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                setError(error);
-                setLoading(false);
-            });
+        const cachedTemplates = localStorage.getItem('joltTemplates');
+        if (cachedTemplates) {
+            setTemplates(JSON.parse(cachedTemplates));
+            setLoading(false);
+        } else {
+            ApiService.fetchJoltTemplates()
+                .then((data) => {
+                    setTemplates(data);
+                    localStorage.setItem('joltTemplates', JSON.stringify(data));
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    setError(error);
+                    setLoading(false);
+                });
+        }
     }, []);
+
+    const toggleCollapse = (category: string) => {
+        setCollapsed(prevState => ({
+            ...prevState,
+            [category]: !prevState[category],
+        }));
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -35,13 +49,6 @@ const JoltTemplateComponent: React.FC<JoltTemplateComponentProps> = ({ onSelect 
     if (error) {
         return <div>Error: {error.message}</div>;
     }
-
-    const toggleCollapse = (date: string) => {
-        setCollapsed(prevState => ({
-            ...prevState,
-            [date]: !prevState[date],
-        }));
-    };
 
     return (
         <div className="joltemplate-content">
@@ -57,7 +64,7 @@ const JoltTemplateComponent: React.FC<JoltTemplateComponentProps> = ({ onSelect 
                                 className={`h-4 w-4 text-gray-500 mr-2 ${collapsed[item.category] ? 'rotate-90' : ''}`} />
                             <div className="font-semibold text-black">{item.category}</div>
                         </div>
-                        {!collapsed[item.category] && (
+                        {collapsed[item.category] && (
                             <ul className="pl-6 mt-1">
                                 {item.joltTemplates.map((record, idx) => (
                                     <li
@@ -65,7 +72,7 @@ const JoltTemplateComponent: React.FC<JoltTemplateComponentProps> = ({ onSelect 
                                         className="mb-1 cursor-pointer"
                                         onClick={() => onSelect(record)}
                                     >
-                                        <div className="text-xs text-black"> {idx+1} : {record.name}</div>
+                                        <div className="text-xs text-black"> {idx + 1} : {record.name}</div>
                                     </li>
                                 ))}
                             </ul>
