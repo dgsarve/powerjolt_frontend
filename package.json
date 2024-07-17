@@ -5,8 +5,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
-		"start": "node_modules/next/dist/bin/next start",
-		"startlocal": "next start -p 80",
+		"start": "next start",
 		"lint": "next lint"
 	},
 	"dependencies": {
