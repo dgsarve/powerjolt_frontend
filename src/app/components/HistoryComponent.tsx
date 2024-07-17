@@ -19,7 +19,7 @@ const HistoryComponent: React.FC<HistoryComponentProps> = ({ onSelect }) => {
                 setLoading(false);
             })
             .catch((error) => {
-                setError(error);
+                setError('Please login');
                 setLoading(false);
             });
     }, []);
@@ -36,7 +36,7 @@ const HistoryComponent: React.FC<HistoryComponentProps> = ({ onSelect }) => {
     }
 
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return <div>Please login</div>;
     }
 
     return (
