@@ -3,12 +3,12 @@ import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import dynamic from 'next/dynamic';
-import {jwtDecode} from 'jwt-decode';
 import HistoryComponent from '@/app/components/HistoryComponent';
 import AdModal from '@/app/components/AdModal';
 import ApiService from '@/app/service/ApiService';
 import LoginDialog from "@/app/components/LoginDialog";
 import JoltTemplateComponent from "@/app/components/JoltTemplates";
+import {Helmet} from "react-helmet";
 
 const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), {ssr: false});
 
@@ -141,7 +141,9 @@ const Page: React.FC = () => {
         <div className="h-screen flex flex-col text-[6px] font-sans"
              style={{fontFamily: 'Open Sans, Roboto, sans-serif'}}>
             {!isAdComplete && <AdModal onAdComplete={() => setIsAdComplete(true)}/>}
-
+            <Helmet>
+                <meta name="google-adsense-account" content="ca-pub-5750827820025211"></meta>
+            </Helmet>
             {isAdComplete && (
                 <>
                     <div className="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
