@@ -27,6 +27,7 @@ const Page: React.FC = () => {
     const [outputJSON, setOutputJSON] = useState<string>('');
     const [history, setHistory] = useState<any[]>([]); // State to hold transformation history
     const [showLoginDialog, setShowLoginDialog] = useState<boolean>(false); // State to control login dialog visibility
+    const [isLoading, setIsLoading] = useState<boolean>(false); // State for loading
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -54,6 +55,7 @@ const Page: React.FC = () => {
     };
 
     const handleTransform = async () => {
+        setIsLoading(true); // Start loading
         try {
             const inputJsonParsed = JSON.parse(inputJSON);
             const joltSpecJsonParsed = JSON.parse(joltSpecJSON);
@@ -76,13 +78,14 @@ const Page: React.FC = () => {
             }
         } catch (error) {
             if (error) {
-                console.log('User is not authenticated. Redirecting to login page...');
-            } else if (error instanceof SyntaxError) {
+                console.log('User is not authenticated.'+error);
+            } else  {
                 setJsonError('Invalid JSON in input or spec');
                 setJoltSpecError('Invalid JSON in input or spec');
-            } else {
                 setOutputError('Failed to transform data: ' + error);
             }
+        } finally {
+            setIsLoading(false); // Stop loading
         }
     };
 
@@ -144,6 +147,21 @@ const Page: React.FC = () => {
             <Helmet>
                 <meta name="google-adsense-account" content="ca-pub-5750827820025211"></meta>
             </Helmet>
+
+
+            <script async
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5750827820025211"
+                    crossOrigin="anonymous"></script>
+
+            <ins className="adsbygoogle"
+                 data-ad-client="ca-pub-5750827820025211"
+                 data-ad-slot="2618506314"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+
             {isAdComplete && (
                 <>
                     <div className="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
@@ -251,12 +269,18 @@ const Page: React.FC = () => {
                                     <h2 className="text-base font-semibold text-gray-700 flex-grow">
                                         Transformed Output
                                     </h2>
-                                    <button
-                                        className="ml-2 bg-blue-500 text-white font-bold py-1 px-3 rounded hover:bg-blue-600"
-                                        onClick={handleTransform}
-                                    >
-                                        Transform Data
-                                    </button>
+                                    {isLoading ? (
+                                        <div className="ml-2 bg-blue-500 text-white font-bold py-1 px-3 rounded hover:bg-blue-600">
+                                            Loading...
+                                        </div>
+                                    ) : (
+                                        <button
+                                            className="ml-2 bg-blue-500 text-white font-bold py-1 px-3 rounded hover:bg-blue-600"
+                                            onClick={handleTransform}
+                                        >
+                                            Transform Data
+                                        </button>
+                                    )}
                                 </div>
                                 <div className="flex-grow flex flex-col">
                                     <JSONEditorComponent
