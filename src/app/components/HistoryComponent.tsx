@@ -31,6 +31,12 @@ const HistoryComponent: React.FC<HistoryComponentProps> = ({ onSelect }) => {
         }));
     };
 
+    const formatTime = (timestamp: string) => {
+        const date = new Date(timestamp);
+        // Format the time to 'HH:MM:SS'
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -60,7 +66,7 @@ const HistoryComponent: React.FC<HistoryComponentProps> = ({ onSelect }) => {
                                         className="mb-1 cursor-pointer"
                                         onClick={() => onSelect(record)}
                                     >
-                                        <div className="text-xs text-black"> {record.timestamp}</div>
+                                        <div className="text-xs text-black">{formatTime(record.timestamp)}</div>
                                     </li>
                                 ))}
                             </ul>
