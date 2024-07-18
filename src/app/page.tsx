@@ -74,7 +74,7 @@ const Page: React.FC = () => {
 
             // Fetch updated history if History component is shown
             if (isSidebarOpen) {
-                fetchHistory();
+               setIsSidebarOpen(false);
             }
         } catch (error) {
             if (error) {
