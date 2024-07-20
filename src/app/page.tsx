@@ -8,7 +8,6 @@ import AdModal from '@/app/components/AdModal';
 import ApiService from '@/app/service/ApiService';
 import LoginDialog from "@/app/components/LoginDialog";
 import JoltTemplateComponent from "@/app/components/JoltTemplates";
-import {Helmet} from "react-helmet";
 
 const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), {ssr: false});
 
@@ -144,23 +143,8 @@ const Page: React.FC = () => {
         <div className="h-screen flex flex-col text-[6px] font-sans"
              style={{fontFamily: 'Open Sans, Roboto, sans-serif'}}>
             {!isAdComplete && <AdModal onAdComplete={() => setIsAdComplete(true)}/>}
-            <Helmet>
-                <meta name="google-adsense-account" content="ca-pub-5750827820025211"></meta>
-            </Helmet>
 
 
-            <script async
-                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5750827820025211"
-                    crossOrigin="anonymous"></script>
-
-            <ins className="adsbygoogle"
-                 data-ad-client="ca-pub-5750827820025211"
-                 data-ad-slot="2618506314"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
 
             {isAdComplete && (
                 <>
@@ -239,6 +223,7 @@ const Page: React.FC = () => {
                                         value={inputJSON}
                                         onChange={setInputJSON}
                                         errorMessage={jsonError}
+
                                     />
                                 </div>
                             </div>

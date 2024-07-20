@@ -12,7 +12,6 @@ const axiosInstance = axios.create({
 // Add interceptor for requests
 axiosInstance.interceptors.request.use(
     config => {
-        console.log('baseURL ',baseURL)
         // Get the token from localStorage
         const token = localStorage.getItem('token');
         if (token) {
