@@ -52,10 +52,6 @@ const JoltTemplateComponent: React.FC<JoltTemplateComponentProps> = ({ onSelect 
 
     return (
         <div className="joltemplate-content">
-            <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-bold">Templates</h2>
-                <ClockIcon className="h-6 w-6 text-gray-500" />
-            </div>
             <ul>
                 {joltemplates.map((item, index) => (
                     <li key={index} className="mb-1 p-1 border-b border-gray-300">

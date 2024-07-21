@@ -1,15 +1,14 @@
 'use client'
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import HistoryComponent from '@/app/components/HistoryComponent';
-import AdModal from '@/app/components/AdModal';
 import ApiService from '@/app/service/ApiService';
 import LoginDialog from "@/app/components/LoginDialog";
 import JoltTemplateComponent from "@/app/components/JoltTemplates";
 
-const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), {ssr: false});
+const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), { ssr: false });
 
 const Page: React.FC = () => {
     const router = useRouter();
@@ -20,13 +19,13 @@ const Page: React.FC = () => {
     const [jsonError, setJsonError] = useState<string>('');
     const [joltSpecError, setJoltSpecError] = useState<string>('');
     const [outputError, setOutputError] = useState<string>('');
-    const [isAdComplete, setIsAdComplete] = useState<boolean>(false);
     const [inputJSON, setInputJSON] = useState<string>('');
     const [joltSpecJSON, setJoltSpecJSON] = useState<string>('');
     const [outputJSON, setOutputJSON] = useState<string>('');
-    const [history, setHistory] = useState<any[]>([]); // State to hold transformation history
-    const [showLoginDialog, setShowLoginDialog] = useState<boolean>(false); // State to control login dialog visibility
-    const [isLoading, setIsLoading] = useState<boolean>(false); // State for loading
+    const [history, setHistory] = useState<any[]>([]);
+    const [showLoginDialog, setShowLoginDialog] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [showTemplateMenu, setShowTemplateMenu] = useState<boolean>(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -54,7 +53,7 @@ const Page: React.FC = () => {
     };
 
     const handleTransform = async () => {
-        setIsLoading(true); // Start loading
+        setIsLoading(true);
         try {
             const inputJsonParsed = JSON.parse(inputJSON);
             const joltSpecJsonParsed = JSON.parse(joltSpecJSON);
@@ -71,20 +70,19 @@ const Page: React.FC = () => {
             setJoltSpecError('');
             setOutputError('');
 
-            // Fetch updated history if History component is shown
             if (isSidebarOpen) {
-               setIsSidebarOpen(false);
+                setIsSidebarOpen(false);
             }
         } catch (error) {
             if (error) {
-                console.log('User is not authenticated.'+error);
-            } else  {
+                console.log('User is not authenticated.' + error);
+            } else {
                 setJsonError('Invalid JSON in input or spec');
                 setJoltSpecError('Invalid JSON in input or spec');
                 setOutputError('Failed to transform data: ' + error);
             }
         } finally {
-            setIsLoading(false); // Stop loading
+            setIsLoading(false);
         }
     };
 
@@ -141,13 +139,9 @@ const Page: React.FC = () => {
 
     return (
         <div className="h-screen flex flex-col text-[6px] font-sans"
-             style={{fontFamily: 'Open Sans, Roboto, sans-serif'}}>
-            {!isAdComplete && <AdModal onAdComplete={() => setIsAdComplete(true)}/>}
+             style={{ fontFamily: 'Open Sans, Roboto, sans-serif' }}>
 
 
-
-            {isAdComplete && (
-                <>
                     <div className="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
                         <div className="flex space-x-8 text-sm">
                             <div>
@@ -155,25 +149,30 @@ const Page: React.FC = () => {
                                     {isSidebarOpen ? 'Hide History' : 'Show History'}
                                 </Link>
                             </div>
+
                             <div>
-                                <Link href="#" onClick={toggleTemplateSidebar}
-                                      className="text-gray-200 hover:underline">
-                                    {isTemplateSidebarOpen ? 'Hide Template' : 'Show Template'}
+                                <Link href="https://medium.com/@thinkcloudmasters/integrating-jolt-with-spring-boot-for-json-transformation-bd414a1080d1" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:underline">
+                                    Spring Boot Example
                                 </Link>
+                            </div>
+                            <div
+                                className="relative"
+                                onMouseEnter={() => setShowTemplateMenu(true)}
+                                onMouseLeave={() => setShowTemplateMenu(false)}
+                            >
+                                <Link href="#" className="text-gray-200 hover:underline">
+                                    Templates
+                                </Link>
+                                {showTemplateMenu && (
+                                    <div className="absolute right-0 bg-white text-black border border-gray-300 mt-1 p-2 w-48 z-10">
+                                        <JoltTemplateComponent onSelect={handleSelectTemplate} />
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-
                         <div className="flex space-x-4 text-sm ml-auto items-center">
-                            <a href="https://medium.com/@thinkcloudmasters/integrating-jolt-with-spring-boot-for-json-transformation-bd414a1080d1"
-                               target="_blank" rel="noopener noreferrer">
-                                  <span className="hover:underline">
-                                    Spring Boot Example
-                                  </span>
-                            </a>
-                            {/*<Link href="/architectexample" className="hover:underline">*/}
-                            {/*    Architecture Example*/}
-                            {/*</Link>*/}
+
                             {user ? (
                                 <>
                                     <span className="text-gray-200 mr-2">Welcome, {user}</span>
@@ -206,11 +205,6 @@ const Page: React.FC = () => {
                             {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory}/>}
                         </div>
 
-                        <div
-                            className={`transition-all duration-300 ${isTemplateSidebarOpen ? 'w-[10%]' : 'w-0'} bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col`}>
-                            {isTemplateSidebarOpen && <JoltTemplateComponent onSelect={handleSelectTemplate}/>}
-                        </div>
-
                         <div className="flex-grow flex">
                             <div className="w-1/3 bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col">
                                 <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300">
@@ -223,7 +217,6 @@ const Page: React.FC = () => {
                                         value={inputJSON}
                                         onChange={setInputJSON}
                                         errorMessage={jsonError}
-
                                     />
                                 </div>
                             </div>
@@ -286,8 +279,7 @@ const Page: React.FC = () => {
                     {showLoginDialog && (
                         <LoginDialog onSuccessLogin={handleLoginSuccess} onClose={closeLoginDialog}/>
                     )}
-                </>
-            )}
+
         </div>
     );
 };
