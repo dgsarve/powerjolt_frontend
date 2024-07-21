@@ -142,6 +142,20 @@ const Page: React.FC = () => {
         <div className="h-screen flex flex-col text-[6px] font-sans"
              style={{ fontFamily: 'Open Sans, Roboto, sans-serif' }}>
 
+            <div>
+                <script async
+                        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5750827820025211"
+                        crossOrigin="anonymous"></script>
+                <ins className="adsbygoogle"
+                     data-ad-client="ca-pub-5750827820025211"
+                     data-ad-slot="2618506314"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+
+            </div>
 
             <div className="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
                 <div className="flex space-x-8 text-sm">
@@ -287,7 +301,7 @@ const Page: React.FC = () => {
             {showLoginDialog && (
                 <LoginDialog onSuccessLogin={handleLoginSuccess} onClose={closeLoginDialog}/>
             )}
-
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         </div>
     );
 };
