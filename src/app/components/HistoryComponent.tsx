@@ -42,7 +42,7 @@ const HistoryComponent: React.FC<HistoryComponentProps> = ({ onSelect }) => {
     }
 
     if (error) {
-        return <div>Please login</div>;
+        return   <div className="text-xs text-black">Please login</div>
     }
 
     return (

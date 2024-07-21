@@ -26,6 +26,7 @@ const Page: React.FC = () => {
     const [showLoginDialog, setShowLoginDialog] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showTemplateMenu, setShowTemplateMenu] = useState<boolean>(false);
+    let timeoutId: NodeJS.Timeout;
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -142,143 +143,150 @@ const Page: React.FC = () => {
              style={{ fontFamily: 'Open Sans, Roboto, sans-serif' }}>
 
 
-                    <div className="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
-                        <div className="flex space-x-8 text-sm">
-                            <div>
-                                <Link href="#" onClick={toggleSidebar} className="text-gray-200 hover:underline">
-                                    {isSidebarOpen ? 'Hide History' : 'Show History'}
-                                </Link>
+            <div className="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
+                <div className="flex space-x-8 text-sm">
+                    <div>
+                        <Link href="#" onClick={toggleSidebar} className="text-gray-200 hover:underline">
+                            {isSidebarOpen ? 'Hide History' : 'Show History'}
+                        </Link>
+                    </div>
+                    <div
+                        className="relative"
+                        onMouseEnter={() => {
+                            clearTimeout(timeoutId);
+                            setShowTemplateMenu(true);
+                        }}
+                        onMouseLeave={() => {
+                            timeoutId = setTimeout(() => {
+                                setShowTemplateMenu(false);
+                            }, 200);
+                        }}
+                    >
+                        <Link href="#" className="text-gray-200 hover:underline">
+                            Templates
+                        </Link>
+                        {showTemplateMenu && (
+                            <div className="absolute right-0 bg-white text-black border border-gray-300 mt-1 p-2 w-48 z-10">
+                                <JoltTemplateComponent onSelect={handleSelectTemplate} />
                             </div>
+                        )}
+                    </div>
 
-                            <div>
-                                <Link href="https://medium.com/@thinkcloudmasters/integrating-jolt-with-spring-boot-for-json-transformation-bd414a1080d1" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:underline">
-                                    Spring Boot Example
-                                </Link>
-                            </div>
-                            <div
-                                className="relative"
-                                onMouseEnter={() => setShowTemplateMenu(true)}
-                                onMouseLeave={() => setShowTemplateMenu(false)}
+                </div>
+
+                <div className="flex space-x-4 text-sm ml-auto items-center">
+                    <div>
+                        <Link href="https://medium.com/@thinkcloudmasters/integrating-jolt-with-spring-boot-for-json-transformation-bd414a1080d1" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:underline">
+                            Spring Boot Example
+                        </Link>
+                    </div>
+
+                    {user ? (
+                        <>
+                            <span className="text-gray-200 mr-2">Welcome, {user}</span>
+                            {profilePictureUrl && (
+                                <img
+                                    src={profilePictureUrl}
+                                    alt=""
+                                    className="w-6 h-6 rounded-full"
+                                />
+                            )}
+                            <button
+                                onClick={handleLogout}
+                                className="bg-red-500 text-white font-bold py-1 px-3 rounded hover:bg-red-600"
                             >
-                                <Link href="#" className="text-gray-200 hover:underline">
-                                    Templates
-                                </Link>
-                                {showTemplateMenu && (
-                                    <div className="absolute right-0 bg-white text-black border border-gray-300 mt-1 p-2 w-48 z-10">
-                                        <JoltTemplateComponent onSelect={handleSelectTemplate} />
-                                    </div>
-                                )}
-                            </div>
+                                Logout
+                            </button>
+                        </>
+                    ) : (
+                        <button onClick={openLoginDialog} className="hover:underline focus:outline-none">
+                            Login
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <div className="flex flex-grow overflow-hidden text-sm bg-gray-50">
+
+                <div
+                    className={`transition-all duration-300 ${isSidebarOpen ? 'w-[10%]' : 'w-0'} bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col`}>
+                    {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory}/>}
+                </div>
+
+                <div className="flex-grow flex">
+                    <div className="w-1/3 bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col">
+                        <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300">
+                            <h2 className="text-base font-semibold text-gray-700 flex-grow">
+                                Input JSON
+                            </h2>
                         </div>
+                        <div className="flex-grow flex flex-col">
+                            <JSONEditorComponent
+                                value={inputJSON}
+                                onChange={setInputJSON}
+                                errorMessage={jsonError}
+                            />
+                        </div>
+                    </div>
+                    <div className="w-1/3 bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col">
+                        <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300 flex items-center">
+                            <h2 className="text-base font-semibold text-gray-700 flex-grow">
+                                Jolt Spec
+                            </h2>
+                            <button
+                                className="ml-2 bg-green-500 text-white font-bold py-1 px-3 rounded hover:bg-green-600 relative"
+                                disabled={true}
+                                style={{position: 'relative'}}
+                            >
+                                AI Spec (Next release)
+                            </button>
 
-                        <div className="flex space-x-4 text-sm ml-auto items-center">
-
-                            {user ? (
-                                <>
-                                    <span className="text-gray-200 mr-2">Welcome, {user}</span>
-                                    {profilePictureUrl && (
-                                        <img
-                                            src={profilePictureUrl}
-                                            alt=""
-                                            className="w-6 h-6 rounded-full"
-                                        />
-                                    )}
-                                    <button
-                                        onClick={handleLogout}
-                                        className="bg-red-500 text-white font-bold py-1 px-3 rounded hover:bg-red-600"
-                                    >
-                                        Logout
-                                    </button>
-                                </>
+                        </div>
+                        <div className="flex-grow flex flex-col">
+                            <JSONEditorComponent
+                                value={joltSpecJSON}
+                                onChange={setJoltSpecJSON}
+                                errorMessage={joltSpecError}
+                            />
+                        </div>
+                    </div>
+                    <div className="w-1/3 bg-white p-2 overflow-y-auto flex flex-col">
+                        <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300 flex items-center">
+                            <h2 className="text-base font-semibold text-gray-700 flex-grow">
+                                Transformed Output
+                            </h2>
+                            {isLoading ? (
+                                <div className="ml-2 bg-blue-500 text-white font-bold py-1 px-3 rounded hover:bg-blue-600">
+                                    Loading...
+                                </div>
                             ) : (
-                                <button onClick={openLoginDialog} className="hover:underline focus:outline-none">
-                                    Login
+                                <button
+                                    className="ml-2 bg-blue-500 text-white font-bold py-1 px-3 rounded hover:bg-blue-600"
+                                    onClick={handleTransform}
+                                >
+                                    Transform Data
                                 </button>
                             )}
                         </div>
-                    </div>
-
-                    <div className="flex flex-grow overflow-hidden text-sm bg-gray-50">
-
-                        <div
-                            className={`transition-all duration-300 ${isSidebarOpen ? 'w-[10%]' : 'w-0'} bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col`}>
-                            {isSidebarOpen && <HistoryComponent onSelect={handleSelectHistory}/>}
-                        </div>
-
-                        <div className="flex-grow flex">
-                            <div className="w-1/3 bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col">
-                                <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300">
-                                    <h2 className="text-base font-semibold text-gray-700 flex-grow">
-                                        Input JSON
-                                    </h2>
-                                </div>
-                                <div className="flex-grow flex flex-col">
-                                    <JSONEditorComponent
-                                        value={inputJSON}
-                                        onChange={setInputJSON}
-                                        errorMessage={jsonError}
-                                    />
-                                </div>
-                            </div>
-                            <div className="w-1/3 bg-white p-2 overflow-y-auto border-r border-gray-300 flex flex-col">
-                                <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300 flex items-center">
-                                    <h2 className="text-base font-semibold text-gray-700 flex-grow">
-                                        Jolt Spec
-                                    </h2>
-                                    <button
-                                        className="ml-2 bg-green-500 text-white font-bold py-1 px-3 rounded hover:bg-green-600 relative"
-                                        disabled={true}
-                                        style={{position: 'relative'}}
-                                    >
-                                        AI Spec (Next release)
-                                    </button>
-
-                                </div>
-                                <div className="flex-grow flex flex-col">
-                                    <JSONEditorComponent
-                                        value={joltSpecJSON}
-                                        onChange={setJoltSpecJSON}
-                                        errorMessage={joltSpecError}
-                                    />
-                                </div>
-                            </div>
-                            <div className="w-1/3 bg-white p-2 overflow-y-auto flex flex-col">
-                                <div className="bg-gray-100 p-1 rounded-t border-b border-gray-300 flex items-center">
-                                    <h2 className="text-base font-semibold text-gray-700 flex-grow">
-                                        Transformed Output
-                                    </h2>
-                                    {isLoading ? (
-                                        <div className="ml-2 bg-blue-500 text-white font-bold py-1 px-3 rounded hover:bg-blue-600">
-                                            Loading...
-                                        </div>
-                                    ) : (
-                                        <button
-                                            className="ml-2 bg-blue-500 text-white font-bold py-1 px-3 rounded hover:bg-blue-600"
-                                            onClick={handleTransform}
-                                        >
-                                            Transform Data
-                                        </button>
-                                    )}
-                                </div>
-                                <div className="flex-grow flex flex-col">
-                                    <JSONEditorComponent
-                                        value={outputJSON}
-                                        onChange={setOutputJSON}
-                                        errorMessage={outputError}
-                                    />
-                                </div>
-                            </div>
+                        <div className="flex-grow flex flex-col">
+                            <JSONEditorComponent
+                                value={outputJSON}
+                                onChange={setOutputJSON}
+                                errorMessage={outputError}
+                            />
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <footer className="bg-blue-600 text-white p-2 text-center text-[10px]">
-                        © {new Date().getFullYear()} Magnasha. All rights reserved.
-                    </footer>
+            <footer className="bg-blue-600 text-white p-2 text-center text-[10px]">
+                © {new Date().getFullYear()} Magnasha. All rights reserved.
+            </footer>
 
-                    {/* Login Dialog */}
-                    {showLoginDialog && (
-                        <LoginDialog onSuccessLogin={handleLoginSuccess} onClose={closeLoginDialog}/>
-                    )}
+            {/* Login Dialog */}
+            {showLoginDialog && (
+                <LoginDialog onSuccessLogin={handleLoginSuccess} onClose={closeLoginDialog}/>
+            )}
 
         </div>
     );
