@@ -8,6 +8,7 @@ const inter = Inter({subsets: ["latin"]});
 export const metadata: Metadata = {
     title: "Power jolt Transformer",
     description: "Light weight transformer for enterprise application",
+    keywords: "Java JSON transformer, JSON to JSON transformation Java, Power Jolt Java JSON, JSON transformation tool, Java JSON mapping, Power Jolt JSON transformer, JSON transformation library Java, Java JSON processing, Power Jolt JSON solutions, JSON transformation framework Java, AI-generated Jolt spec tool, AI Jolt spec generator, Automated Jolt spec generation, AI-powered JSON processing Java, JSON transformation AI Java tool, Java JSON mapping with AI, Power Jolt AI JSON solutions, AI Jolt transformer, AI JSON transformation, Java AI JSON tool, Enterprise JSON transformer, AI Java JSON library, JSON mapping automation, AI-based JSON transformation, JSON transformation API Java, AI for JSON processing"
 };
 
 export default function RootLayout({
