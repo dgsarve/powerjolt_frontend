@@ -1,21 +1,18 @@
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import HistoryComponent from '@/app/components/HistoryComponent';
 import ApiService from '@/app/service/ApiService';
 import LoginDialog from "@/app/components/LoginDialog";
-import JoltTemplateComponent from "@/app/components/JoltTemplates";
-
-const JSONEditorComponent = dynamic(() => import('@/app/components/JSONEditorComponent'), { ssr: false });
+import JSONEditorComponent from '@/app/components/JSONEditorComponent';
+import Header from '@/app/components/Header';
 
 const Page: React.FC = () => {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [profilePictureUrl, setProfilePictureUrl] = useState<string>('');
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
-    const [isTemplateSidebarOpen, setIsTemplateSidebarOpen] = useState<boolean>(true);
     const [jsonError, setJsonError] = useState<string>('');
     const [joltSpecError, setJoltSpecError] = useState<string>('');
     const [outputError, setOutputError] = useState<string>('');
@@ -25,8 +22,6 @@ const Page: React.FC = () => {
     const [history, setHistory] = useState<any[]>([]);
     const [showLoginDialog, setShowLoginDialog] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [showTemplateMenu, setShowTemplateMenu] = useState<boolean>(false);
-    let timeoutId: NodeJS.Timeout;
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -108,16 +103,8 @@ const Page: React.FC = () => {
         setOutputJSON(record.outputJson);
     };
 
-    const handleSpecAction = () => {
-        console.log('Spec Action button clicked');
-    };
-
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
-    };
-
-    const toggleTemplateSidebar = () => {
-        setIsTemplateSidebarOpen(!isTemplateSidebarOpen);
     };
 
     const openLoginDialog = () => {
@@ -142,83 +129,15 @@ const Page: React.FC = () => {
         <div className="h-screen flex flex-col text-[6px] font-sans"
              style={{ fontFamily: 'Open Sans, Roboto, sans-serif' }}>
 
-            <div>
-                <script async
-                        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5750827820025211"
-                        crossOrigin="anonymous"></script>
-                <ins className="adsbygoogle"
-                     data-ad-client="ca-pub-5750827820025211"
-                     data-ad-slot="2618506314"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-
-            </div>
-
-            <div className="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
-                <div className="flex space-x-8 text-sm">
-                    <div>
-                        <Link href="#" onClick={toggleSidebar} className="text-gray-200 hover:underline">
-                            {isSidebarOpen ? 'Hide History' : 'Show History'}
-                        </Link>
-                    </div>
-                    <div
-                        className="relative"
-                        onMouseEnter={() => {
-                            clearTimeout(timeoutId);
-                            setShowTemplateMenu(true);
-                        }}
-                        onMouseLeave={() => {
-                            timeoutId = setTimeout(() => {
-                                setShowTemplateMenu(false);
-                            }, 200);
-                        }}
-                    >
-                        <Link href="#" className="text-gray-200 hover:underline">
-                            Templates
-                        </Link>
-                        {showTemplateMenu && (
-                            <div className="absolute right-0 bg-white text-black border border-gray-300 mt-1 p-2 w-48 z-10">
-                                <JoltTemplateComponent onSelect={handleSelectTemplate} />
-                            </div>
-                        )}
-                    </div>
-
-                </div>
-
-                <div className="flex space-x-4 text-sm ml-auto items-center">
-                    <div>
-                        <Link href="https://medium.com/@thinkcloudmasters/integrating-jolt-with-spring-boot-for-json-transformation-bd414a1080d1" target="_blank" rel="noopener noreferrer" className="text-gray-200 hover:underline">
-                            Spring Boot Example
-                        </Link>
-                    </div>
-
-                    {user ? (
-                        <>
-                            <span className="text-gray-200 mr-2">Welcome, {user}</span>
-                            {profilePictureUrl && (
-                                <img
-                                    src={profilePictureUrl}
-                                    alt=""
-                                    className="w-6 h-6 rounded-full"
-                                />
-                            )}
-                            <button
-                                onClick={handleLogout}
-                                className="bg-red-500 text-white font-bold py-1 px-3 rounded hover:bg-red-600"
-                            >
-                                Logout
-                            </button>
-                        </>
-                    ) : (
-                        <button onClick={openLoginDialog} className="hover:underline focus:outline-none">
-                            Login
-                        </button>
-                    )}
-                </div>
-            </div>
+            <Header
+                user={user}
+                profilePictureUrl={profilePictureUrl}
+                handleLogout={handleLogout}
+                openLoginDialog={openLoginDialog}
+                handleSelectTemplate={handleSelectTemplate}
+                isSidebarOpen={isSidebarOpen}
+                toggleSidebar={toggleSidebar}
+            />
 
             <div className="flex flex-grow overflow-hidden text-sm bg-gray-50">
 
