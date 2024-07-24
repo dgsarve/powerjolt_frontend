@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import JSONEditor from 'jsoneditor';
 import 'jsoneditor/dist/jsoneditor.css';
 import ResizeObserver from 'resize-observer-polyfill';
@@ -15,13 +15,17 @@ const JSONEditorComponent: React.FC<JSONEditorComponentProps> = ({ value, onChan
     const jsonEditorRef = useRef<JSONEditor | null>(null);
     const [editorHeight, setEditorHeight] = useState<number>(256); // Initial height
 
+    // Callback to handle text change in the editor
+    const handleChangeText = useCallback((jsonString: string) => {
+        onChange(jsonString);
+    }, [onChange]);
+
+    // Effect to initialize JSONEditor
     useEffect(() => {
         if (typeof window !== 'undefined' && editorRef.current) {
             jsonEditorRef.current = new JSONEditor(editorRef.current, {
                 mode: 'code',
-                onChangeText: (jsonString: string) => {
-                    onChange(jsonString);
-                }
+                onChangeText: handleChangeText,
             });
 
             jsonEditorRef.current.setText(value);
@@ -57,8 +61,9 @@ const JSONEditorComponent: React.FC<JSONEditorComponentProps> = ({ value, onChan
                 ro.disconnect();
             };
         }
-    }, []);
+    }, [handleChangeText, value]);
 
+    // Effect to update the editor content when the value changes
     useEffect(() => {
         if (jsonEditorRef.current) {
             try {

@@ -3,7 +3,6 @@ import React, {useState} from 'react';
 import Link from "next/link";
 import {useRouter} from 'next/navigation';
 import LoginDialog from "@/app/components/LoginDialog";
-
 const Header: React.FC = () => {
     const router = useRouter();
     const [showTemplateMenu, setShowTemplateMenu] = useState<boolean>(false);

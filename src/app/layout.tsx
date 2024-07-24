@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Head from "next/head";
 import Header from '@/app/components/Header';
+import Script from 'next/script';
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,32 +23,6 @@ export default function RootLayout({
         <Head>
             <meta name="google-adsense-account" content="ca-pub-5750827820025211"></meta>
             <meta name="google-site-verification" content="IPyRRhgxWhjZzmgkPLHZwZ6wc3RIx4L8AB0fNHwYPzE"></meta>
-
-            {/* Google Analytics */}
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-P647K6M805"></script>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-P647K6M805');
-            `,
-                }}
-            />
-
-            {/* Google Ads */}
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-              (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-5750827820025211",
-                enable_page_level_ads: true
-              });
-            `,
-                }}
-            />
         </Head>
         <body className={inter.className}>
         <Header />
@@ -55,6 +30,34 @@ export default function RootLayout({
         <footer className="bg-blue-600 text-white p-2 text-center text-[10px]">
             © {new Date().getFullYear()} Magnasha. All rights reserved.
         </footer>
+
+        {/* Google Analytics */}
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-P647K6M805" />
+        <Script
+            id="google-analytics"
+            dangerouslySetInnerHTML={{
+                __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-P647K6M805');
+            `,
+            }}
+        />
+
+        {/* Google Ads */}
+        <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" />
+        <Script
+            id="google-ads"
+            dangerouslySetInnerHTML={{
+                __html: `
+              (adsbygoogle = window.adsbygoogle || []).push({
+                google_ad_client: "ca-pub-5750827820025211",
+                enable_page_level_ads: true
+              });
+            `,
+            }}
+        />
         </body>
         </html>
     );
