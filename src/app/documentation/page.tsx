@@ -28,13 +28,13 @@ const JoltDocumentationPage: React.FC = () => {
                     <h2 className="text-xl font-semibold mb-2 text-blue-600">Jolt Specification</h2>
                     <p className="text-sm text-gray-600 mb-4">
                         Jolt uses a specification file to define transformations. The specification consists
-                        of operations like "shift", "default", "remove", and more. Each operation
+                        of operations like &quot;shift&quot;, &quot;default&quot;, &quot;remove&quot;, and more. Each operation
                         has its own purpose and can be combined to achieve complex transformations.
                     </p>
 
                     <h3 className="text-lg font-semibold mb-2 text-blue-600">Operation: Shift</h3>
                     <p className="text-sm text-gray-600 mb-4">
-                        The "shift" operation is the primary transformation operation in Jolt. It maps data from
+                        The &quot;shift&quot; operation is the primary transformation operation in Jolt. It maps data from
                         one part of the input JSON structure to another part of the output JSON structure.
                         The shift operation is specified using a JSON object where you define a mapping of paths
                         from the input to the output.
@@ -56,7 +56,7 @@ const JoltDocumentationPage: React.FC = () => {
 
                     <h3 className="text-lg font-semibold mb-2 text-blue-600">Operation: Default</h3>
                     <p className="text-sm text-gray-600 mb-4">
-                        The "default" operation provides default values for fields that may be missing in the input
+                        The &quot;default&quot; operation provides default values for fields that may be missing in the input
                         JSON. This ensures that the output JSON always contains the required fields, even if they
                         were not present in the input.
                     </p>
@@ -73,7 +73,7 @@ const JoltDocumentationPage: React.FC = () => {
 
                     <h3 className="text-lg font-semibold mb-2 text-blue-600">Operation: Remove</h3>
                     <p className="text-sm text-gray-600 mb-4">
-                        The "remove" operation deletes specified fields from the JSON. This can be used to
+                        The &quot;remove&quot; operation deletes specified fields from the JSON. This can be used to
                         exclude unnecessary data from the output JSON.
                     </p>
                     <pre className="bg-gray-800 text-white p-4 rounded-lg mb-4">
@@ -89,7 +89,7 @@ const JoltDocumentationPage: React.FC = () => {
 
                     <h3 className="text-lg font-semibold mb-2 text-blue-600">Operation: Modify</h3>
                     <p className="text-sm text-gray-600 mb-4">
-                        The "modify" operation allows you to change the values of fields in the JSON structure.
+                        The &quot;modify&quot; operation allows you to change the values of fields in the JSON structure.
                         This can be useful for data transformation that involves adjusting or calculating values.
                     </p>
                     <pre className="bg-gray-800 text-white p-4 rounded-lg mb-4">
