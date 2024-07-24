@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import Link from "next/link";
 import {useRouter} from 'next/navigation';
 import LoginDialog from "@/app/components/LoginDialog";
+
 const Header: React.FC = () => {
     const router = useRouter();
     const [showTemplateMenu, setShowTemplateMenu] = useState<boolean>(false);
@@ -44,8 +45,6 @@ const Header: React.FC = () => {
     };
 
 
-
-
     return (
         <div className="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
             <div className="flex space-x-8 text-sm">
@@ -53,6 +52,12 @@ const Header: React.FC = () => {
                 {/* Additional Navigation Links */}
                 <div>
                     <Link href="/" className="text-gray-200 hover:underline">Home</Link>
+                </div>
+                <div>
+                    <Link href="/documentation" className="text-gray-200 hover:underline">Documentation</Link>
+                </div>
+                <div>
+                    <Link href="/guide" className="text-gray-200 hover:underline">Getting Started</Link>
                 </div>
                 <div>
                     <Link href="/privacy" className="text-gray-200 hover:underline">Privacy</Link>
