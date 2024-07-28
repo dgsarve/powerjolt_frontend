@@ -1,7 +1,7 @@
 'use client';
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from "next/link";
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import LoginDialog from "@/app/components/LoginDialog";
 
 const Header: React.FC = () => {
@@ -10,10 +10,21 @@ const Header: React.FC = () => {
     const [profilePictureUrl, setProfilePictureUrl] = useState<string>('');
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
     const [showLoginDialog, setShowLoginDialog] = useState<boolean>(false);
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<string | null>(null);
 
-    let timeoutId: NodeJS.Timeout;
+    // Check authentication status on component mount
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('name');
+        const picture = localStorage.getItem('picture');
 
+        if (token && username) {
+            setUser(username);
+            setProfilePictureUrl(picture || '');
+        } else {
+            setUser(null);
+        }
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -22,7 +33,8 @@ const Header: React.FC = () => {
         setUser(null);
         setProfilePictureUrl('');
         router.push('/');
-
+        // Refresh the page to ensure all states and components are reinitialized
+        window.location.reload();
     };
 
     const openLoginDialog = () => {
@@ -33,22 +45,22 @@ const Header: React.FC = () => {
         setShowLoginDialog(false);
     };
 
-
     const handleLoginSuccess = () => {
+        // After successful login, update user state based on local storage
         const token = localStorage.getItem('token');
         const username = localStorage.getItem('name');
-        const picture: any = localStorage.getItem('picture');
-        if (token) {
-            setUser(username);
-            setProfilePictureUrl(picture);
-        }
-    };
+        const picture = localStorage.getItem('picture');
 
+        if (token && username) {
+            setUser(username);
+            setProfilePictureUrl(picture || '');
+        }
+        closeLoginDialog(); // Close dialog after successful login
+    };
 
     return (
         <div className="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
             <div className="flex space-x-8 text-sm">
-
                 {/* Additional Navigation Links */}
                 <div>
                     <Link href="/" className="text-gray-200 hover:underline">Home</Link>
