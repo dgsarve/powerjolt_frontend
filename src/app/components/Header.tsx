@@ -57,6 +57,9 @@ const Header: React.FC = () => {
                     <Link href="/documentation" className="text-gray-200 hover:underline">Documentation</Link>
                 </div>
                 <div>
+                    <Link href="/architecture" className="text-gray-200 hover:underline">Spring Architecture</Link>
+                </div>
+                <div>
                     <Link href="/guide" className="text-gray-200 hover:underline">Getting Started</Link>
                 </div>
                 <div>

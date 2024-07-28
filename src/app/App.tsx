@@ -6,6 +6,7 @@ import About from "@/app/about/page";
 import ContactUsPage from "@/app/contact/page";
 import JoltDocumentationPage from "@/app/documentation/page";
 import GettingStartedPage from "@/app/guide/page";
+import ArchitecturePage from "@/app/architecture/page";
 
 
 
@@ -16,6 +17,7 @@ const App: React.FC = () => {
                 <Route path="/" element={<Page />} />
                 <Route path="/documentation" element={<JoltDocumentationPage/>}/>
                 <Route path="/guide" element={<GettingStartedPage/>}/>
+                <Route path="/architecture" element={<ArchitecturePage/>}/>
                 <Route path="/privacy" element={<PrivacyPolicy/>}/>
                 <Route path="/about" element={<About/>}/>
                 <Route path="/contact" element={<ContactUsPage/>}/>
